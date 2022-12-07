@@ -1,6 +1,5 @@
 from djoser.serializers import UserSerializer
 from rest_framework import serializers
-from foodgram_api import serializers as foodgram_serializers
 from foodgram_api.models import Recipe
 from users.models import Subscription, User
 
