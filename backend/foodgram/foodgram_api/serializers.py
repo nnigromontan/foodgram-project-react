@@ -63,7 +63,7 @@ class AddIngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    author = CurrentUserSerializer()
+    author = CurrentUserSerializer(read_only=True)
     tags = TagField(
         slug_field='id', queryset=Tag.objects.all(), many=True
     )

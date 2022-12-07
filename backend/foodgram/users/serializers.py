@@ -1,8 +1,7 @@
 from djoser.serializers import UserSerializer
 from rest_framework import serializers
-
+from foodgram_api import serializers as foodgram_serializers
 from foodgram_api.models import Recipe
-from foodgram_api.serializers import ShortRecipeSerializer
 from users.models import Subscription, User
 
 
@@ -94,6 +93,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         ).exists()
 
     def get_recipes(self, obj):
+        from foodgram_api.serializers import ShortRecipeSerializer
         request = self.context.get('request')
         if request.GET.get('recipe_limit'):
             recipe_limit = int(request.GET.get('recipe_limit'))

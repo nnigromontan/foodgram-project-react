@@ -6,7 +6,7 @@ from rest_framework.response import Response
 
 from core.pagination import CustomPagination
 from users.models import Subscription, User
-from foodgram_api.serializers import SubscribeSerializer, SubscriptionSerializer
+from .serializers import SubscribeSerializer, SubscriptionSerializer
 
 
 class SubscriptionViewSet(ListAPIView):
