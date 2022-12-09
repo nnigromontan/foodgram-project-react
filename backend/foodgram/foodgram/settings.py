@@ -112,6 +112,8 @@ MEDIA_URL = 'media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
+DATA_ROOT = os.path.join(BASE_DIR, 'data/')
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
@@ -156,4 +158,5 @@ DJOSER = {
 
 # API parameters
 MIN = 1
+
 SHOPPING_CART_FILE_NAME = 'shopping_list.txt'
