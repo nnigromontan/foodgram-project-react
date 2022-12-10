@@ -10,3 +10,4 @@ Pillow==9.0.0
 python-dotenv==0.19.2
 django-colorfield==0.6.3
 django-cors-headers==3.13.0
+sqlparse==0.3.1 
