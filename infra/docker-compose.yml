@@ -18,13 +18,6 @@ services:
       - db
     env_file:
       - ./.env
-  # migration:
-  #   image: nigromontan/foodgram_backend:latest
-  #   command: python manage.py migrate --noinput
-  #   volumes:
-  #     - .:/code
-  #   depends_on:
-  #     - db
   frontend:
     image: nigromontan/foodgram_front:latest
     volumes:
