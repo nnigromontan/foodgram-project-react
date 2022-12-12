@@ -6,7 +6,7 @@ import os
 
 from django.core.management.base import BaseCommand, CommandError
 
-from foodgram.settings import DATA_ROOT #Почему-то так себя ведет .isort  приходится переделывать вручную.
+from foodgram.settings import DATA_ROOT  # Почему-то так себя ведет .isort  приходится переделывать вручную.
 from foodgram_api.models import Ingredient
 
 
@@ -27,8 +27,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            with open(
-                os.path.join(DATA_ROOT, 'ingredients.csv')) as csv_file:
+            with open(os.path.join(DATA_ROOT, 'ingredients.csv')) as csv_file:
                 data = csv.reader(csv_file)
                 for row in data:
                     name, measurement_unit = row
