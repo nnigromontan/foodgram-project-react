@@ -88,7 +88,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         user = self.request.user
         if model.objects.filter(recipe=recipe, user=user).exists():
             serializer = RecipeSerializer(recipe)
-            return Response(method='retreive', status=status.HTTP_200_OK)
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
         model.objects.create(recipe=recipe, user=user)
         serializer = ShortRecipeSerializer(recipe)
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
