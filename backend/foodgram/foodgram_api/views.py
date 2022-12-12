@@ -1,16 +1,16 @@
 """Представления приложения foodgram_api."""
 
-from core.pagination import CustomPagination
-from core.utils import convert_txt
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.validators import ValidationError
 
+from core.pagination import CustomPagination
+from core.utils import convert_txt
 from .filters import IngredientFilter, TagFilter
 from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
                      ShoppingCart, Tag)

@@ -5,9 +5,10 @@ import logging
 import os
 
 from django.core.management.base import BaseCommand, CommandError
-from foodgram_api.models import Ingredient
 
 from foodgram.settings import DATA_ROOT
+from foodgram_api.models import Ingredient
+
 
 logging.basicConfig(
     level=logging.INFO,

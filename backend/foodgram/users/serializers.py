@@ -1,8 +1,9 @@
 """Сериализаторы приложения users."""
 
 from djoser.serializers import UserSerializer
-from foodgram_api.models import Recipe
 from rest_framework import serializers
+
+from foodgram_api.models import Recipe
 from users.models import Subscription, User
 
 

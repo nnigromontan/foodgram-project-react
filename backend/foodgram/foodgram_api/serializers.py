@@ -3,10 +3,9 @@
 from django.db import transaction
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers, validators
+
 from users.serializers import CurrentUserSerializer
-
 from foodgram.settings import MIN
-
 from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
                      ShoppingCart, Tag)
 

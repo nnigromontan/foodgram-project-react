@@ -1,13 +1,14 @@
 """Команда, импортирующая тэги из csv-файла."""
 
+import os
 import csv
 import logging
-import os
 
 from django.core.management.base import BaseCommand, CommandError
-from foodgram_api.models import Tag
 
 from foodgram.settings import DATA_ROOT
+from foodgram_api.models import Tag
+
 
 logging.basicConfig(
     level=logging.INFO,
