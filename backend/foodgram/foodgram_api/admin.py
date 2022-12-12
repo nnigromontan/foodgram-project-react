@@ -1,3 +1,5 @@
+"""Админ-панель проекта foodgram."""
+
 from django.contrib import admin
 
 from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,

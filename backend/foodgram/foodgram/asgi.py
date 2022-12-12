@@ -1,4 +1,5 @@
 """Конфигурация ASGI для проекта foodgram."""
+
 import os
 
 from django.core.asgi import get_asgi_application

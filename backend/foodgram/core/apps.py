@@ -1,3 +1,5 @@
+"""Конфигурация приложения core проекта foodgram."""
+
 from django.apps import AppConfig
 
 

@@ -1,7 +1,8 @@
-from django.urls import include, path
-from rest_framework.routers import DefaultRouter
+"""Адреса приложения foodgram_api."""
 
+from django.urls import include, path
 from foodgram_api.views import IngredientViewSet, RecipeViewSet, TagViewSet
+from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register('ingredients', IngredientViewSet)

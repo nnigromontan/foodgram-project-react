@@ -1,3 +1,5 @@
+"Описание пагинации для проекта foodgram."
+
 from rest_framework.pagination import PageNumberPagination
 
 

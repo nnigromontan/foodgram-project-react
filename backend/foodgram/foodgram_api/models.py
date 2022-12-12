@@ -1,9 +1,11 @@
+"""Модели проекта foodgram."""
+
+from colorfield.fields import ColorField
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from django.db import models
-
-from colorfield.fields import ColorField
 from users.models import User
+
 
 class Tag(models.Model):
     name = models.CharField(
@@ -31,6 +33,7 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+
 
 class Ingredient(models.Model):
     name = models.CharField(

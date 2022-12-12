@@ -1,7 +1,9 @@
+"""Фильтры приложения foodgram_api."""
+
 from django_filters.rest_framework import FilterSet, filters
+from users.models import User
 
 from .models import Ingredient, Recipe, Tag
-from users.models import User
 
 
 class IngredientFilter(FilterSet):
@@ -29,11 +31,11 @@ class TagFilter(FilterSet):
         fields = ('tags', 'author', 'is_favorited', 'is_in_shopping_cart')
 
     def get_is_favorited(self, queryset, name, value):
-        if self.request.user.is_authenticated and value is True:
+        if self.request.user.is_authenticated and value:
             return queryset.filter(users_favorites__user=self.request.user)
         return queryset
 
     def get_is_in_shopping_cart(self, queryset, name, value):
-        if self.request.user.is_authenticated and value is True:
+        if self.request.user.is_authenticated and value:
             return queryset.filter(shopping_cart__user=self.request.user)
         return queryset

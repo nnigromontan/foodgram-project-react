@@ -1,3 +1,7 @@
+"""Представления приложения foodgram_api."""
+
+from core.pagination import CustomPagination
+from core.utils import convert_txt
 from django.db.models import Sum
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -9,12 +13,11 @@ from rest_framework.validators import ValidationError
 
 from .filters import IngredientFilter, TagFilter
 from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
-                                 ShoppingCart, Tag)
+                     ShoppingCart, Tag)
 from .permissions import IsOwnerOrReadOnly
 from .serializers import (AddRecipeSerializer, IngredientSerializer,
-                                      RecipeSerializer, ShortRecipeSerializer, TagSerializer)
-from core.pagination import CustomPagination
-from core.utils import convert_txt
+                          RecipeSerializer, ShortRecipeSerializer,
+                          TagSerializer)
 
 
 class IngredientViewSet(
@@ -84,7 +87,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, pk=pk)
         user = self.request.user
         if model.objects.filter(recipe=recipe, user=user).exists():
-            raise ValidationError('Рецепт уже добавлен')
+            serializer = RecipeSerializer(recipe)
+            return Response(method='retreive', status=status.HTTP_200_OK)
         model.objects.create(recipe=recipe, user=user)
         serializer = ShortRecipeSerializer(recipe)
         return Response(data=serializer.data, status=status.HTTP_201_CREATED)
@@ -104,4 +108,3 @@ class TagViewSet(
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (AllowAny,)
-

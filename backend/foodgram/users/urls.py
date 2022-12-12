@@ -7,6 +7,6 @@ from .views import SubscribeView, SubscriptionViewSet
 urlpatterns = [
     path('', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
-    path('users/subscriptions/', SubscriptionViewSet.as_view()),
-    path('users/<int:pk>/subscribe/', SubscribeView.as_view())
+    path('users/subscriptions/', SubscriptionViewSet.as_view(), name='subscribtions'),
+    path('users/<int:pk>/subscribe/', SubscribeView.as_view(), name='subscribe'),
 ]
