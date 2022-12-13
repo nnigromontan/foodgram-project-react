@@ -15,15 +15,7 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('__all__')
-
-
-class TagField(serializers.SlugRelatedField):
-
-    def to_representation(self, value):
-        request = self.context.get('request')
-        context = {'request': request}
-        serializer = TagSerializer(value, context=context)
-        return serializer.data
+        read_only_fields = ('__all__')
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -43,11 +35,10 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
     class Meta:
         model = IngredientsInRecipe
         fields = ('id', 'name', 'measurement_unit', 'amount')
-
-    validators = validators.UniqueTogetherValidator(
-        queryset=IngredientsInRecipe.objects.all(),
-        fields=('ingredient', 'recipe')
-    ),
+        validators = validators.UniqueTogetherValidator(
+            queryset=IngredientsInRecipe.objects.all(),
+            fields=('ingredient', 'recipe')
+        ),
 
     def __str__(self):
         return f'{self.ingredient} in {self.recipe}'
@@ -64,7 +55,7 @@ class AddIngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     author = CurrentUserSerializer(read_only=True)
-    tags = TagField(
+    tags = TagSerializer(
         slug_field='id', queryset=Tag.objects.all(), many=True
     )
     ingredients = IngredientInRecipeSerializer(
