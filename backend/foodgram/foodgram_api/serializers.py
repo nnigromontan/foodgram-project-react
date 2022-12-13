@@ -12,9 +12,10 @@ from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
 
 class TagSerializer(serializers.ModelSerializer):
     slug = serializers.SlugRelatedField(
-    many=True,
-    read_only=True,
-    slug_field='id')
+        many=True,
+        read_only=True,
+        slug_field='id'
+    )
 
     class Meta:
         model = Tag
