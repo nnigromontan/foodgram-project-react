@@ -12,6 +12,12 @@ from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
 
 class TagSerializer(serializers.ModelSerializer):
 
+    def to_representation(self, value):
+        request = self.context.get('request')
+        context = {'request': request}
+        serializer = TagSerializer(value, context=context)
+        return serializer.data
+
     class Meta:
         model = Tag
         fields = ('__all__')
