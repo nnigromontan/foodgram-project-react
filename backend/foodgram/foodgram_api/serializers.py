@@ -105,7 +105,8 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
 
 class AddRecipeSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(), many=True)
+        queryset=Tag.objects.all(), many=True
+    )
     ingredients = AddIngredientSerializer(many=True)
     author = CurrentUserSerializer(read_only=True)
     image = Base64ImageField()
