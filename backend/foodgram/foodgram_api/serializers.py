@@ -11,16 +11,12 @@ from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
 
 
 class TagSerializer(serializers.ModelSerializer):
-    slug = serializers.SlugRelatedField(
-        many=True,
-        read_only=True,
-        slug_field='slug'
-    )
 
     class Meta:
         model = Tag
         fields = ('__all__')
-        read_only_fields = ('__all__')
+        lookup_field = 'id'
+        extra_kwargs = {'url': {'lookup_field': 'id'}}
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -105,7 +101,7 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time', 'tags')
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
 class AddRecipeSerializer(serializers.ModelSerializer):
