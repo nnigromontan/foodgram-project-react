@@ -28,7 +28,6 @@ class IngredientViewSet(
     serializer_class = IngredientSerializer
     permission_classes = (AllowAny,)
     filterset_class = IngredientFilter
-    pagination_class = None
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -107,4 +106,3 @@ class TagViewSet(
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (AllowAny,)
-    pagination_class = None

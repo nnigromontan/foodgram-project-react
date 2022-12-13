@@ -11,6 +11,11 @@ from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
 
 
 class TagSerializer(serializers.ModelSerializer):
+    slug = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='slug'
+    )
 
     class Meta:
         model = Tag
@@ -100,29 +105,41 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
+        fields = ('id', 'name', 'image', 'cooking_time', 'tags')
 
 
 class AddRecipeSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(), many=True
+        queryset=Tag.objects.all(),
+        many=True
     )
     ingredients = AddIngredientSerializer(many=True)
-    author = CurrentUserSerializer(read_only=True)
-    image = Base64ImageField()
+    image = Base64ImageField(max_length=None)
 
     class Meta:
         model = Recipe
         fields = (
-            'id',
-            'author',
-            'ingredients',
             'tags',
-            'image',
             'name',
+            'ingredients',
+            'image',
             'text',
-            'cooking_time',
+            'cooking_time'
         )
+
+    def to_representation(self, instance):
+        serializer = RecipeSerializer(instance)
+        return serializer.data
+
+    def create_ingredients(self, ingredients, recipe):
+        for ingredient in ingredients:
+            amount = ingredient['amount']
+            ingredient = ingredient['id']
+            ingredients, created = IngredientsInRecipe.objects.get_or_create(
+                recipe=recipe,
+                ingredient=ingredient,
+                amount=amount
+            )
 
     @transaction.atomic
     def create(self, validated_data):
@@ -170,7 +187,7 @@ class AddRecipeSerializer(serializers.ModelSerializer):
         return data
 
     def validate_cooking_time(self, data):
-        if data < MIN:
+        if data <= 0:
             raise serializers.ValidationError(
                 'Время приготовления не может быть меньше 1 минуты'
             )
