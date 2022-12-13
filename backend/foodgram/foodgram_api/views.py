@@ -30,6 +30,7 @@ class IngredientViewSet(
     filterset_class = IngredientFilter
     pagination_class = None
 
+
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = (IsOwnerOrReadOnly,)
