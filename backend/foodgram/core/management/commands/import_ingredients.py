@@ -6,7 +6,7 @@ import os
 
 from django.core.management.base import BaseCommand, CommandError
 
-from foodgram.settings import DATA_ROOT  # Почему-то так себя ведет .isort  приходится переделывать вручную.
+from foodgram.settings import DATA_ROOT
 from foodgram_api.models import Ingredient
 
 

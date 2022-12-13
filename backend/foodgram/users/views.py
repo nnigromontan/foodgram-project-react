@@ -1,7 +1,6 @@
 """Представления приложения users."""
 
 from django.shortcuts import get_object_or_404
-
 from rest_framework import status, views
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated

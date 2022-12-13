@@ -44,12 +44,10 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
         model = IngredientsInRecipe
         fields = ('id', 'name', 'measurement_unit', 'amount')
 
-    validators = (
-        validators.UniqueTogetherValidator(
-            queryset=IngredientsInRecipe.objects.all(),
-            fields=('ingredient', 'recipe')
-        ),
-    )
+    validators = validators.UniqueTogetherValidator(
+        queryset=IngredientsInRecipe.objects.all(),
+        fields=('ingredient', 'recipe')
+    ),
 
     def __str__(self):
         return f'{self.ingredient} in {self.recipe}'
