@@ -56,7 +56,7 @@ class AddIngredientSerializer(serializers.ModelSerializer):
 class RecipeSerializer(serializers.ModelSerializer):
     author = CurrentUserSerializer(read_only=True)
     tags = TagSerializer(
-        slug_field='id', queryset=Tag.objects.all(), many=True
+        slug_field='slug', queryset=Tag.objects.all(), many=True
     )
     ingredients = IngredientInRecipeSerializer(
         source='ingredient_in_recipe',
