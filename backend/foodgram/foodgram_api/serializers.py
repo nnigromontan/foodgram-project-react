@@ -12,12 +12,6 @@ from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
 
 class TagSerializer(serializers.ModelSerializer):
 
-    def to_representation(self, value):
-        request = self.context.get('request')
-        context = {'request': request}
-        serializer = TagSerializer(value, context=context)
-        return serializer.data
-
     class Meta:
         model = Tag
         fields = ('__all__')
@@ -61,9 +55,7 @@ class AddIngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     author = CurrentUserSerializer(read_only=True)
-    tags = TagSerializer(
-        queryset=Tag.objects.all(), many=True
-    )
+    tags = TagSerializer(many=True, read_only=True)
     ingredients = IngredientInRecipeSerializer(
         source='ingredient_in_recipe',
         read_only=True, many=True
@@ -111,38 +103,25 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
-class AddRecipeSerializer(serializers.ModelSerializer):
+class RecipeSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(),
-        many=True
-    )
+        queryset=Tag.objects.all(), many=True)
     ingredients = AddIngredientSerializer(many=True)
-    image = Base64ImageField(max_length=None)
+    author = CurrentUserSerializer(read_only=True)
+    image = Base64ImageField()
 
     class Meta:
         model = Recipe
         fields = (
-            'tags',
-            'name',
+            'id',
+            'author',
             'ingredients',
+            'tags',
             'image',
+            'name',
             'text',
-            'cooking_time'
+            'cooking_time',
         )
-
-    def to_representation(self, instance):
-        serializer = RecipeSerializer(instance)
-        return serializer.data
-
-    def create_ingredients(self, ingredients, recipe):
-        for ingredient in ingredients:
-            amount = ingredient['amount']
-            ingredient = ingredient['id']
-            ingredients, created = IngredientsInRecipe.objects.get_or_create(
-                recipe=recipe,
-                ingredient=ingredient,
-                amount=amount
-            )
 
     @transaction.atomic
     def create(self, validated_data):
