@@ -31,6 +31,17 @@ class IngredientViewSet(
     pagination_class = None
 
 
+class TagViewSet(
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet
+):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    permission_classes = (AllowAny,)
+    pagination_class = None
+
+
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     permission_classes = (IsOwnerOrReadOnly,)
@@ -97,14 +108,3 @@ class RecipeViewSet(viewsets.ModelViewSet):
         obj = get_object_or_404(model, recipe=recipe, user=user)
         obj.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class TagViewSet(
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet
-):
-    queryset = Tag.objects.all()
-    serializer_class = TagSerializer
-    permission_classes = (AllowAny,)
-    pagination_class = None
