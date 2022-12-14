@@ -11,6 +11,11 @@ from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
 
 
 class TagSerializer(serializers.ModelSerializer):
+    id = serializers.SlugRelatedField(
+        slug_field='id',
+        queryset=Tag.objects.all(),
+        many=True
+    )
 
     class Meta:
         model = Tag
@@ -65,11 +70,7 @@ class AddIngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     author = CurrentUserSerializer(read_only=True)
-    tags = serializers.SlugRelatedField(
-        queryset=Tag.objects.all(),
-        slug_field='id',
-        many=True,
-    )
+    tags = TagSerializer.id()
     ingredients = IngredientInRecipeSerializer(
         source='ingredient_in_recipe',
         read_only=True, many=True
