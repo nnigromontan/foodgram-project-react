@@ -11,26 +11,10 @@ from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
 
 
 class TagSerializer(serializers.ModelSerializer):
-    id = serializers.SlugRelatedField(
-        slug_field='id',
-        queryset=Tag.objects.all(),
-        many=True
-    )
-
+    
     class Meta:
         model = Tag
         fields = ('__all__')
-        exclude = ('id',)
-        lookup_field = 'id'
-        extra_kwargs = {
-            'url': {'lookup_field': 'id'}
-        }
-
-    def to_representation(self, value):
-        request = self.context.get('request')
-        context = {'request': request}
-        serializer = TagSerializer(value, context=context)
-        return serializer.data
 
 
 class IngredientSerializer(serializers.ModelSerializer):
