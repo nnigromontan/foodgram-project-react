@@ -11,17 +11,10 @@ from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
 
 
 class TagSerializer(serializers.ModelSerializer):
-    slug = serializers.SlugRelatedField(
-        many=True,
-        read_only=True,
-        slug_field='id'
-    )
 
     class Meta:
         model = Tag
         fields = ('__all__')
-        lookup_field = 'id'
-        extra_kwargs = {'url': {'lookup_field': 'id'}}
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -61,7 +54,12 @@ class AddIngredientSerializer(serializers.ModelSerializer):
 
 class RecipeSerializer(serializers.ModelSerializer):
     author = CurrentUserSerializer(read_only=True)
-    tags = TagSerializer(slug_field='id', many=True, read_only=True)
+    tags = serializers.SlugRelatedField(
+        queryset=Tag.objects.all(),
+        slug_field='slug',
+        many=True,
+        read_only=True,
+    )
     ingredients = IngredientInRecipeSerializer(
         source='ingredient_in_recipe',
         read_only=True, many=True
@@ -112,7 +110,7 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
 class AddRecipeSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
-        many=True
+        many=True,
     )
     ingredients = AddIngredientSerializer(many=True)
     image = Base64ImageField(max_length=None)
