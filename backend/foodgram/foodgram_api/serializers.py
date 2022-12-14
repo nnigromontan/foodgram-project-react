@@ -15,6 +15,11 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('__all__')
+        exclude = ('id',)
+        lookup_field = 'id'
+        extra_kwargs = {
+            'url': {'lookup_field': 'id'}
+        }
 
 
 class IngredientSerializer(serializers.ModelSerializer):
