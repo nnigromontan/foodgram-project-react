@@ -12,7 +12,7 @@ services:
     expose:
       - 8000
     volumes:
-      - static_value:/app/backend_static/
+      - backend_static_value:/app/backend_static/
       - media_value:/app/backend_media/
     depends_on:
       - db
