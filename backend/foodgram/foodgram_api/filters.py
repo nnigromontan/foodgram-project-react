@@ -2,7 +2,7 @@
 
 from django_filters.rest_framework import FilterSet, filters
 
-from .models import Ingredient, Recipe,Tag
+from .models import Ingredient, Recipe, Tag
 from users.models import User
 
 
