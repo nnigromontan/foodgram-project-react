@@ -15,6 +15,11 @@ class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = ('__all__')
+        exclude = ('id',)
+        lookup_field = 'id'
+        extra_kwargs = {
+            'url': {'lookup_field': 'id'}
+        }
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -56,7 +61,7 @@ class RecipeSerializer(serializers.ModelSerializer):
     author = CurrentUserSerializer(read_only=True)
     tags = serializers.SlugRelatedField(
         queryset=Tag.objects.all(),
-        slug_field='slug',
+        slug_field='id',
         many=True,
         read_only=True,
     )

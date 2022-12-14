@@ -13,7 +13,7 @@ class IngredientFilter(FilterSet):
         fields = ('name',)
 
 
-class RecipeFilter(filters.FilterSet):
+class RecipeFilter(FilterSet):
     is_favorited = filters.BooleanFilter(
         method='get_favorite',
         label='favorite',
