@@ -20,7 +20,7 @@ class TagSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'url': {'lookup_field': 'id'}
         }
-    
+
     def to_representation(self, value):
         request = self.context.get('request')
         context = {'request': request}
