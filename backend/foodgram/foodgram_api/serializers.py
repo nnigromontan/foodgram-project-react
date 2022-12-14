@@ -20,6 +20,12 @@ class TagSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'url': {'lookup_field': 'id'}
         }
+    
+    def to_representation(self, value):
+        request = self.context.get('request')
+        context = {'request': request}
+        serializer = TagSerializer(value, context=context)
+        return serializer.data
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -60,10 +66,9 @@ class AddIngredientSerializer(serializers.ModelSerializer):
 class RecipeSerializer(serializers.ModelSerializer):
     author = CurrentUserSerializer(read_only=True)
     tags = serializers.SlugRelatedField(
+        queryset=Tag.objects.all(),
         slug_field='id',
         many=True,
-        read_only=True,
-        default=TagSerializer(),
     )
     ingredients = IngredientInRecipeSerializer(
         source='ingredient_in_recipe',
