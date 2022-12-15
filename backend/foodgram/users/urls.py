@@ -6,9 +6,12 @@ from rest_framework.routers import DefaultRouter
 from .views import SubscribeView, SubscriptionViewSet, CustomUserViewSet
 
 app_name = 'users'
+
 router = DefaultRouter()
 router.register('users', CustomUserViewSet, basename='users')
-router.register( r'users/subscriptions', SubscriptionViewSet, basename='subscriptions')
+router.register(r'users/subscriptions',
+                SubscriptionViewSet,
+                basename='subscriptions')
 
 urlpatterns = [
     path('', include('djoser.urls')),
