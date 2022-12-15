@@ -16,12 +16,6 @@ class TagSerializer(serializers.ModelSerializer):
         model = Tag
         fields = ('__all__')
 
-    def to_representation(self, value):
-        request = self.context.get('request')
-        context = {'request': request}
-        serializer = TagSerializer(value, context=context)
-        return serializer.data
-
 
 class IngredientSerializer(serializers.ModelSerializer):
 
@@ -61,7 +55,7 @@ class AddIngredientSerializer(serializers.ModelSerializer):
 class RecipeSerializer(serializers.ModelSerializer):
     author = CurrentUserSerializer(read_only=True)
     tags = TagSerializer(
-        queryset=Tag.objects.all(),
+        read_only=True,
         many=True,
     )
     ingredients = IngredientInRecipeSerializer(
@@ -115,7 +109,6 @@ class AddRecipeSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
         many=True,
-        pk_field='id',
     )
     ingredients = AddIngredientSerializer(many=True)
     image = Base64ImageField(max_length=None)
@@ -166,13 +159,13 @@ class AddRecipeSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
     def validate(self, data):
-        ings = data['ingredients']
-        if not ings:
+        ingredients = data['ingredients']
+        if not ingredients:
             raise serializers.ValidationError(
                 'Поле с ингредиентами не может быть пустым'
             )
-        unique_ings = []
-        for ingredient in ings:
+        unique_ingredients = []
+        for ingredient in ingredients:
             name = ingredient['id']
             if int(ingredient['amount']) <= 0:
                 raise serializers.ValidationError(
@@ -182,8 +175,8 @@ class AddRecipeSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     'Количество ингредиентов должно быть целым числом'
                 )
-            if name not in unique_ings:
-                unique_ings.append(name)
+            if name not in unique_ingredients:
+                unique_ingredients.append(name)
             else:
                 raise serializers.ValidationError(
                     'В рецепте не может быть повторяющихся ингредиентов'
