@@ -1,16 +1,13 @@
 """Сериализаторы приложения users."""
 
-from djoser.serializers import UserSerializer
+from djoser.serializers import UserSerializer, UserCreateSerializer
 from rest_framework import serializers
 
 from foodgram_api.models import Recipe
-from users.models import Subscription, User
+from users.models import User
 
 
-class CurrentUserSerializer(UserSerializer):
-    is_subscribed = serializers.SerializerMethodField(
-        method_name='get_is_subscribed'
-    )
+class CustomUserCreateSerializer(UserCreateSerializer):
 
     class Meta:
         model = User
@@ -20,92 +17,56 @@ class CurrentUserSerializer(UserSerializer):
             'username',
             'first_name',
             'last_name',
-            'is_subscribed'
+            'password'
         )
+        extra_kwargs = {'password': {'write_only': True}}
 
-    def get_is_subscribed(self, obj):
-        request = self.context.get('request')
-        if request is None or request.user.is_anonymous:
-            return False
-        return Subscription.objects.filter(
-            user=request.user, author=obj
-        ).exists()
+    def create(self, validated_data):
+        user = User.objects.create(
+            email=validated_data['email'],
+            username=validated_data['username'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name']
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 
-class SubscribeSerializer(serializers.ModelSerializer):
+class ShortRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
-        model = Subscription
-        fields = ('user', 'author')
-
-    def to_representation(self, instance):
-        request = self.context.get('request')
-        context = {'request': request}
-        serializer = SubscriptionSerializer(
-            instance,
-            context=context
-        )
-        return serializer.data
-
-    def validate(self, data):
-        user = data.get('user')
-        author = data.get('author')
-        if user == author:
-            raise serializers.ValidationError(
-                'Нельзя подписаться на самого себя!'
-            )
-        if Subscription.objects.filter(user=user, author=author).exists():
-            raise serializers.ValidationError(
-                'Вы уже подписаны на этого пользователя!'
-            )
-        return data
+        model = Recipe
+        fields = ('id', 'name', 'image', 'cooking_time')
 
 
-class SubscriptionSerializer(serializers.ModelSerializer):
-    email = serializers.ReadOnlyField(source='author.email')
-    id = serializers.ReadOnlyField(source='author.id')
-    username = serializers.ReadOnlyField(source='author.username')
-    first_name = serializers.ReadOnlyField(source='author.first_name')
-    last_name = serializers.ReadOnlyField(source='author.last_name')
-    is_subscribed = serializers.SerializerMethodField(
-        method_name='get_is_subscribed'
-    )
-    recipes = serializers.SerializerMethodField(method_name='get_recipes')
-    recipes_count = serializers.SerializerMethodField(
-        method_name='get_recipes_count'
-    )
+class SubscriptionSerializer(UserSerializer):
+    is_subscribed = serializers.SerializerMethodField(read_only=True)
+    recipes = serializers.SerializerMethodField(read_only=True)
+    recipes_count = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
-        model = Subscription
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed',
-            'recipes',
-            'recipes_count'
-        )
-
-    def get_is_subscribed(self, obj):
-        request = self.context.get('request')
-        return Subscription.objects.filter(
-            author=obj.author, user=request.user
-        ).exists()
-
-    def get_recipes(self, obj):
-        from foodgram_api.serializers import ShortRecipeSerializer
-        request = self.context.get('request')
-        recipe_limit = int(request.GET.get('recipe_limit'))
-        if recipe_limit:
-            recipes = obj.recipes.all()[:(recipe_limit)]
-        else:
-            recipes = obj.recipes.all()
-        context = {'request': request}
-        return ShortRecipeSerializer(recipes, many=True,
-                                      context=context).data
+        model = User
+        fields = ('email', 'id', 'username', 'first_name', 'last_name',
+                  'is_subscribed', 'recipes', 'recipes_count')
 
     @staticmethod
     def get_recipes_count(obj):
         return obj.recipes.count()
+
+    def get_recipes(self, obj):
+        request = self.context.get('request')
+        limit_recipes = request.query_params.get('recipes_limit')
+        if limit_recipes:
+            recipes = obj.recipes.all()[:(int(limit_recipes))]
+        else:
+            recipes = obj.recipes.all()
+        context = {'request': request}
+        return ShortRecipeSerializer(recipes, many=True,
+                                     context=context).data
+
+    def get_is_subscribed(self, obj):
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return obj.subscribed.filter(user=user).exists()

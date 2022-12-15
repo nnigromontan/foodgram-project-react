@@ -7,17 +7,17 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from core.pagination import CustomPagination
 from core.utils import convert_txt
-from .filters import IngredientFilter, TagFilter
+from .filters import TagFilter, IngredientFilter
 from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
                      ShoppingCart, Tag)
 from .permissions import IsOwnerOrReadOnly
 from .serializers import (AddRecipeSerializer, IngredientSerializer,
-                          RecipeSerializer, ShortRecipeSerializer,
-                          TagSerializer)
+                          RecipeSerializer, TagSerializer)
+from users.serializers import ShortRecipeSerializer
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
@@ -25,7 +25,6 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     serializer_class = IngredientSerializer
     permission_classes = (AllowAny,)
     filterset_class = IngredientFilter
-    pagination_class = None
 
 
 class TagViewSet(ReadOnlyModelViewSet):
