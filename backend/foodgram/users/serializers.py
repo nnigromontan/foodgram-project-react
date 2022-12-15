@@ -27,7 +27,7 @@ class CurrentUserSerializer(UserSerializer):
         if not request or request.user.is_anonymous:
             return False
         return Subscription.objects.filter(user=self.context['request'].user,
-                                     author=obj).exists()
+                                           author=obj).exists()
 
 
 class ShortRecipeSerializer(serializers.ModelSerializer):
@@ -105,7 +105,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
             recipes = obj.recipes.all()
         context = {'request': request}
         return ShortRecipeSerializer(recipes, many=True,
-                                      context=context).data
+                                     context=context).data
 
     @staticmethod
     def get_recipes_count(self, obj):
