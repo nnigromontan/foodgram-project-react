@@ -21,7 +21,7 @@ class CreateUserView(UserViewSet):
 
     def get_queryset(self):
         return User.objects.all()
-    
+
     @action(
         detail=False,
         permission_classes=(IsAuthenticated, ),
@@ -35,7 +35,7 @@ class CreateUserView(UserViewSet):
         if page is not None:
             serializer = SubscriptionSerializer(
                 page,
-                context={'request':request},
+                context={'request': request},
                 many=True,
             )
             return self.get_paginated_response(serializer.data)
