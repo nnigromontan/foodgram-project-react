@@ -27,7 +27,6 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     filterset_class = IngredientFilter
 
 
-
 class TagViewSet(ReadOnlyModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
