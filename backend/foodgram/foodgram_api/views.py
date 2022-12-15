@@ -16,8 +16,8 @@ from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
                      ShoppingCart, Tag)
 from .permissions import IsOwnerOrReadOnly
 from .serializers import (AddRecipeSerializer, IngredientSerializer,
-                          RecipeSerializer, ShortRecipeSerializer,
-                          TagSerializer)
+                          RecipeSerializer, TagSerializer)
+from users.serializers import ShortRecipeSerializer
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
