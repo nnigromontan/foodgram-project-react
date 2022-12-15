@@ -11,7 +11,6 @@ from users.serializers import SubscribeSerializer, SubscriptionSerializer
 
 
 class SubscriptionViewSet(ListAPIView):
-    queryset = User.objects.all()
     serializer_class = SubscriptionSerializer
     pagination_class = CustomPagination
     filter_backends = (filters.SearchFilter, )
