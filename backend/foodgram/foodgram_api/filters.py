@@ -10,6 +10,7 @@ from users.models import User
 class IngredientSearchFilter(SearchFilter):
     pass
 
+
 class IngredientFilter(FilterSet):
     name = filters.CharFilter(lookup_expr='istartswith')
 
