@@ -9,7 +9,7 @@ from rest_framework.response import Response
 
 from core.pagination import CustomPagination
 from users.models import Subscription, User
-from .serializers import SubscriptionSerializer,  CustomUserSerializer
+from .serializers import SubscriptionSerializer, CustomUserSerializer
 
 
 class CustomUserViewSet(UserViewSet):
