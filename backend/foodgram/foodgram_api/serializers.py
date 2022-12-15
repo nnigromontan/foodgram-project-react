@@ -4,7 +4,7 @@ from django.db import transaction
 from drf_extra_fields.fields import Base64ImageField
 from rest_framework import serializers, validators
 
-from users.serializers import CurrentUserSerializer
+from users.serializers import CustomUserSerializer
 from foodgram.settings import MIN
 from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
                      ShoppingCart, Tag)
@@ -53,7 +53,7 @@ class AddIngredientSerializer(serializers.ModelSerializer):
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    author = CurrentUserSerializer(read_only=True)
+    author = CustomUserSerializer(read_only=True)
     tags = TagSerializer(
         read_only=True,
         many=True,
