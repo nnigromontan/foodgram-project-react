@@ -82,4 +82,4 @@ class SubscriptionSerializer(CustomUserSerializer):
             recipes = obj.recipes.all()
         context = {'request': request}
         return ShortRecipeSerializer(recipes, many=True,
-                                      context=context).data
+                                     context=context).data
