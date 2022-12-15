@@ -6,38 +6,23 @@ from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
+from rest_framework.viewsets import GenericViewSet, ModelViewSet
 from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 
 from core.pagination import CustomPagination
 from users.models import Subscription, User
-from .serializers import SubscriptionSerializer, CustomUserSerializer
+from .serializers import SubscriptionSerializer
 
 
-class CustomUserViewSet(UserViewSet):
-    queryset = User.objects.all()
-    serializer_class = CustomUserSerializer
-    permission_classes = [IsAuthenticatedOrReadOnly]
-
-
-class SubscriptionViewSet(
-    RetrieveModelMixin,
-    ListModelMixin,
-    GenericViewSet
-):
+class SubscriptionViewSet(ModelViewSet):
     serializer_class = SubscriptionSerializer
     pagination_class = CustomPagination
     permission_classes = (IsAuthenticated,)
+    http_method_names = ('get', 'post', 'delete', )
 
     def get_queryset(self):
         user = self.request.user
         return User.objects.filter(subscribed__user=user)
-
-
-class SubscribeView(views.APIView):
-    pagination_class = CustomPagination
-    permission_classes = (IsAuthenticated,)
-    serializer_class = SubscriptionSerializer
 
     def post(self, request, *args, **kwargs):
         user_id = self.kwargs.get('user_id')

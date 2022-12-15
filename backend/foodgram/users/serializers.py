@@ -4,7 +4,7 @@ from djoser.serializers import UserSerializer, UserCreateSerializer
 from rest_framework import serializers
 
 from foodgram_api.models import Recipe
-from users.models import Subscription, User
+from users.models import User
 
 
 class CustomUserCreateSerializer(UserCreateSerializer):
@@ -33,26 +33,6 @@ class CustomUserCreateSerializer(UserCreateSerializer):
         return user
 
 
-class CustomUserSerializer(UserSerializer):
-    is_subscribed = serializers.SerializerMethodField(read_only=True)
-
-    class Meta:
-        model = User
-        fields = (
-            'email',
-            'id',
-            'username',
-            'first_name',
-            'last_name',
-            'is_subscribed')
-
-    def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
-        if user.is_anonymous:
-            return False
-        return Subscription.objects.filter(user=user, author=obj.id).exists()
-
-
 class ShortRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -60,7 +40,8 @@ class ShortRecipeSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'image', 'cooking_time')
 
 
-class SubscriptionSerializer(CustomUserSerializer):
+class SubscriptionSerializer(UserSerializer):
+    is_subscribed = serializers.SerializerMethodField(read_only=True)
     recipes = serializers.SerializerMethodField(read_only=True)
     recipes_count = serializers.SerializerMethodField(read_only=True)
 
@@ -83,3 +64,9 @@ class SubscriptionSerializer(CustomUserSerializer):
         context = {'request': request}
         return ShortRecipeSerializer(recipes, many=True,
                                      context=context).data
+
+    def get_is_subscribed(self, obj):
+        user = self.context.get('request').user
+        if user.is_anonymous:
+            return False
+        return obj.subscribed.filter(user=user).exists()
