@@ -3,7 +3,6 @@
 from djoser.serializers import UserSerializer
 from rest_framework import serializers
 
-from foodgram_api.models import Recipe
 from users.models import Subscription, User
 
 
@@ -104,7 +103,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
             recipes = obj.recipes.all()
         context = {'request': request}
         return ShortRecipeSerializer(recipes, many=True,
-                                      context=context).data
+                                     context=context).data
 
     @staticmethod
     def get_recipes_count(obj):

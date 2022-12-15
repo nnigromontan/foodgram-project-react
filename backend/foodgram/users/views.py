@@ -20,8 +20,7 @@ class SubscriptionViewSet(ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        new_queryset = User.objects.filter(subscribed__user=user)
-        return new_queryset
+        return User.objects.filter(subscribed__user=user)
 
 
 class SubscribeView(views.APIView):
