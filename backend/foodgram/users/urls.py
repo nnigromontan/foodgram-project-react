@@ -8,7 +8,7 @@ from .views import SubscribeView, SubscriptionViewSet, CustomUserViewSet
 app_name = 'users'
 
 router = DefaultRouter()
-router.register('users', CustomUserViewSet, basename='users')
+router.register(r'users', CustomUserViewSet, basename='users')
 router.register(r'users/subscriptions',
                 SubscriptionViewSet,
                 basename='subscriptions')
