@@ -7,7 +7,8 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.viewsets import ReadOnlyModelViewSet, ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
+from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 
 from core.pagination import CustomPagination
 from core.utils import convert_txt
@@ -20,7 +21,11 @@ from .serializers import (AddRecipeSerializer, IngredientSerializer,
 from users.serializers import ShortRecipeSerializer
 
 
-class IngredientViewSet(ReadOnlyModelViewSet):
+class IngredientViewSet(
+    RetrieveModelMixin,
+    ListModelMixin,
+    GenericViewSet
+):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (AllowAny,)
@@ -28,7 +33,11 @@ class IngredientViewSet(ReadOnlyModelViewSet):
     pagination_class = None
 
 
-class TagViewSet(ReadOnlyModelViewSet):
+class TagViewSet(
+    RetrieveModelMixin,
+    ListModelMixin,
+    GenericViewSet
+):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (AllowAny,)
