@@ -1,14 +1,21 @@
 """Представления приложения users."""
 
-from django.shortcuts import get_object_or_404
+from djoser.views import UserViewSet
 from rest_framework import status, views
-from rest_framework.generics import ListAPIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.generics import ListAPIView, get_object_or_404
+from rest_framework.permissions import (IsAuthenticated,
+                                        IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
 
 from core.pagination import CustomPagination
 from users.models import Subscription, User
-from .serializers import SubscriptionSerializer
+from .serializers import SubscriptionSerializer,  CustomUserSerializer
+
+
+class CustomUserViewSet(UserViewSet):
+    queryset = User.objects.all()
+    serializer_class = CustomUserSerializer
+    permission_classes = [IsAuthenticatedOrReadOnly]
 
 
 class SubscriptionViewSet(ListAPIView):
