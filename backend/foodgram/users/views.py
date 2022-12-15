@@ -1,13 +1,45 @@
 """Представления приложения users."""
-from django.shortcuts import get_object_or_404
+
+from djoser.views import UserViewSet
+from django.shortcuts import get_list_or_404, get_object_or_404
 from rest_framework import status, views, filters
+from rest_framework.decorators import action
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from core.pagination import CustomPagination
 from users.models import Subscription, User
-from users.serializers import SubscribeSerializer, SubscriptionSerializer
+from users.serializers import (SubscribeSerializer,
+                               SubscriptionSerializer,
+                               CurrentUserSerializer)
+
+
+class CreateUserView(UserViewSet):
+    pagination_class = CustomPagination
+    serializer_class = CurrentUserSerializer
+
+    def get_queryset(self):
+        return User.objects.all()
+    
+    @action(
+        detail=False,
+        permission_classes=(IsAuthenticated, ),
+        pagination_class=CustomPagination
+    )
+    def subscriptions(self, request):
+        subscribers = get_list_or_404(
+            User, subscribed__user=self.request.user
+        )
+        page = self.paginate_queryset(subscribers)
+        if page is not None:
+            serializer = SubscriptionSerializer(
+                page,
+                context={'request':request},
+                many=True,
+            )
+            return self.get_paginated_response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class SubscriptionViewSet(ListAPIView):
