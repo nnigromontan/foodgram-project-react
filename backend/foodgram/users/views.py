@@ -2,10 +2,12 @@
 
 from djoser.views import UserViewSet
 from rest_framework import status, views
-from rest_framework.generics import ListAPIView, get_object_or_404
+from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import (IsAuthenticated,
                                         IsAuthenticatedOrReadOnly)
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
+from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 
 from core.pagination import CustomPagination
 from users.models import Subscription, User
@@ -18,7 +20,11 @@ class CustomUserViewSet(UserViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly]
 
 
-class SubscriptionViewSet(ListAPIView):
+class SubscriptionViewSet(
+    RetrieveModelMixin,
+    ListModelMixin,
+    GenericViewSet
+):
     serializer_class = SubscriptionSerializer
     pagination_class = CustomPagination
     permission_classes = (IsAuthenticated,)
