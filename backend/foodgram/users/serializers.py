@@ -97,17 +97,15 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     def get_recipes(self, obj):
         from foodgram_api.serializers import ShortRecipeSerializer
         request = self.context.get('request')
-        if request.GET.get('recipe_limit'):
-            recipe_limit = int(request.GET.get('recipe_limit'))
-            queryset = Recipe.objects.filter(
-                author=obj.author)[:recipe_limit]
+        recipe_limit = int(request.GET.get('recipe_limit')):
+        if recipe_limit:
+            recipes = obj.recipes.all()[:(recipe_limit)]
         else:
-            queryset = Recipe.objects.filter(
-                author=obj.author)
-        serializer = ShortRecipeSerializer(
-            queryset, read_only=True, many=True
-        )
-        return serializer.data
+            recipes = obj.recipes.all()
+        context = {'request': request}
+        return ShortRecipeSerializer(recipes, many=True,
+                                      context=context).data
 
-    def get_recipes_count(self, obj):
-        return obj.author.recipes.count()
+    @staticmethod
+    def get_recipes_count(obj):
+        return obj.recipes.count()

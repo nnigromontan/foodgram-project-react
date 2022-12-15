@@ -1,7 +1,7 @@
 """Представления приложения users."""
 
 from django.shortcuts import get_object_or_404
-from rest_framework import status, views
+from rest_framework import status, views, filters
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -15,9 +15,13 @@ class SubscriptionViewSet(ListAPIView):
     serializer_class = SubscriptionSerializer
     pagination_class = CustomPagination
     permission_classes = (IsAuthenticated,)
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('^subscribed__user',)
 
     def get_queryset(self):
-        return User.objects.filter(subscribed__user=self.request.user)
+        user = self.request.user
+        new_queryset = User.objects.filter(subscribed__user=user)
+        return new_queryset
 
 
 class SubscribeView(views.APIView):
