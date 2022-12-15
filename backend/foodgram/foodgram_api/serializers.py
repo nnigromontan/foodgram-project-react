@@ -98,13 +98,6 @@ class RecipeSerializer(serializers.ModelSerializer):
         return self.in_list(obj, ShoppingCart)
 
 
-class ShortRecipeSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Recipe
-        fields = ('id', 'name', 'image', 'cooking_time')
-
-
 class AddRecipeSerializer(serializers.ModelSerializer):
     tags = serializers.PrimaryKeyRelatedField(
         queryset=Tag.objects.all(),
