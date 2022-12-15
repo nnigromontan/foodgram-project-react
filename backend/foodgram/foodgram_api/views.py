@@ -13,7 +13,7 @@ from rest_framework.mixins import RetrieveModelMixin, ListModelMixin
 
 from core.pagination import CustomPagination
 from core.utils import convert_txt
-from .filters import TagFilter, IngredientSearchFilter
+from .filters import TagFilter, IngredientFilter
 from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
                      ShoppingCart, Tag)
 from .permissions import IsOwnerOrReadOnly
@@ -30,7 +30,7 @@ class IngredientViewSet(
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (AllowAny,)
-    filter_backends = [IngredientSearchFilter, ]
+    filterset_class = IngredientFilter
     pagination_class = None
 
 
