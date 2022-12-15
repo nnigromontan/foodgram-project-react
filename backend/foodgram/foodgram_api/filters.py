@@ -1,14 +1,17 @@
 """Фильтры приложения foodgram_api."""
 
 from django_filters.rest_framework import FilterSet, filters
-from rest_framework.filters import SearchFilter
 
-from .models import Recipe
+from .models import Recipe, Ingredient
 from users.models import User
 
 
-class IngredientSearchFilter(SearchFilter):
-    search_param = 'name'
+class IngredientFilter(FilterSet):
+    name = filters.CharFilter(lookup_expr='istartswith')
+
+    class Meta:
+        model = Ingredient
+        fields = ('name',)
 
 
 class TagFilter(FilterSet):
