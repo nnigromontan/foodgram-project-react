@@ -30,7 +30,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class SubscribeApiView(APIView):
+class SubscribeView(APIView):
     permission_classes = [IsAuthenticated, ]
 
     def get(self, request, pk):
@@ -56,7 +56,7 @@ class SubscribeApiView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class FollowListApiView(generics.ListAPIView):
+class SubscriptionViewSet(generics.ListAPIView):
     permission_classes = [IsAuthenticated, ]
     serializer_class = SubscriptionSerializer
 
