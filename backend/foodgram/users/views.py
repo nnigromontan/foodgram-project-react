@@ -47,7 +47,6 @@ class SubscriptionViewSet(ListAPIView):
     pagination_class = CustomPagination
     permission_classes = (IsAuthenticated, )
 
- 
     def get_queryset(self):
         return User.objects.filter(subscribed__user=self.request.user)
 
