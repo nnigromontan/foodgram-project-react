@@ -6,11 +6,11 @@ from users.models import User
 
 
 class IngredientFilter(FilterSet):
-    name = filters.CharFilter(field_name="name", lookup_expr='istartswith')
+    name = filters.CharFilter(field_name="name", lookup_expr='icontains')
 
     class Meta:
         model = Ingredient
-        fields = ('name',)
+        fields = ['name', ]
 
 
 class TagFilter(FilterSet):
