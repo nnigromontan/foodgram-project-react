@@ -2,7 +2,7 @@
 
 from djoser.views import UserViewSet
 from django.shortcuts import get_list_or_404, get_object_or_404
-from rest_framework import status, views, filters
+from rest_framework import status, views
 from rest_framework.decorators import action
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
@@ -45,13 +45,11 @@ class CreateUserView(UserViewSet):
 class SubscriptionViewSet(ListAPIView):
     serializer_class = SubscriptionSerializer
     pagination_class = CustomPagination
-    filter_backends = (filters.SearchFilter, )
     permission_classes = (IsAuthenticated, )
-    search_fields = ('^subscribed__user', )
 
     def get_queryset(self):
         user = self.request.user
-        return User.objects.filter(subscriber__user=user)
+        return user.subscribed.all()
 
 
 class SubscribeView(views.APIView):
