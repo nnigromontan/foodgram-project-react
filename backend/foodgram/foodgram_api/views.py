@@ -11,7 +11,7 @@ from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 
 from core.pagination import CustomPagination
 from core.utils import convert_txt
-from .filters import TagFilter, IngredientFilter
+from .filters import TagFilter, IngredientSearchFilter
 from .models import (Favorite, Ingredient, IngredientsInRecipe, Recipe,
                      ShoppingCart, Tag)
 from .permissions import IsOwnerOrReadOnly
@@ -20,16 +20,13 @@ from .serializers import (AddRecipeSerializer, IngredientSerializer,
 from users.serializers import ShortRecipeSerializer
 
 
-class IngredientViewSet(
-    mixins.RetrieveModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet
-):
+class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
     permission_classes = (AllowAny,)
-    filterset_class = IngredientFilter
+    filter_backends = (DjangoFilterBackend, IngredientSearchFilter)
     pagination_class = None
+    search_fields = ['^name', ]
 
 
 class TagViewSet(ReadOnlyModelViewSet):
