@@ -1,6 +1,5 @@
 """Представления приложения users."""
 
-from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets, generics
 from rest_framework.decorators import action
@@ -14,8 +13,6 @@ from .models import User, Subscription
 from .serializers import (
     SubscriptionSerializer, SubscribeSerializer, CurrentUserSerializer
 )
-
-User = get_user_model()
 
 
 class UserViewSet(viewsets.ModelViewSet):

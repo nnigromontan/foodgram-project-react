@@ -6,6 +6,7 @@ from rest_framework.validators import UniqueTogetherValidator
 from foodgram_api.models import Recipe
 from .models import Subscription, User
 
+
 class ShortRecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -38,7 +39,7 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         if (data['user'] == data['author']
-            and self.context['request'].method == 'POST'):
+                and self.context['request'].method == 'POST'):
             raise serializers.ValidationError(
                 'Нельзя подписаться на самого себя'
             )
@@ -67,7 +68,7 @@ class SubscriptionSerializer(serializers.ModelSerializer):
     def get_is_subscribed(self, obj):
         user = self.context.get('request').user
         if not user:
-             return False
+            return False
         return Subscription.objects.filter(user=user, author=obj).exists()
 
     def get_recipes(self, obj):
