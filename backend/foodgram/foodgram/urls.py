@@ -9,6 +9,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('users.urls', namespace='users')),
     path('api/', include('foodgram_api.urls', namespace='foodgram_api')),
+    path('api/', include('djoser.urls')),
+    path('api/auth/', include('djoser.urls.authtoken')),
 ]
 
 if settings.DEBUG:
