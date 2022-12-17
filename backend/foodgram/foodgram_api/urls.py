@@ -9,8 +9,8 @@ from users.views import SubscriptionViewSet
 app_name = 'foodgram_api'
 
 router = DefaultRouter()
-router.register('ingredients', IngredientViewSet)
-router.register('recipes', RecipeViewSet)
+router.register('ingredients', IngredientViewSet, basename='ingredients')
+router.register('recipes', RecipeViewSet, basename='recipes')
 router.register('tags', TagViewSet, basename='tags')
 router.register(
     r'users/(?P<user_id>\d+)/subscribe',
