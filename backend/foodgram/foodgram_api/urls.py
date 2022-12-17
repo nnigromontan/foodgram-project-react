@@ -5,6 +5,7 @@ from rest_framework.routers import DefaultRouter
 
 from foodgram_api.views import IngredientViewSet, RecipeViewSet, TagViewSet
 
+app_name = 'foodgram_api'
 
 router = DefaultRouter()
 router.register('ingredients', IngredientViewSet)

@@ -1,70 +1,53 @@
 """Представления приложения users."""
 
 from django.shortcuts import get_object_or_404
-from rest_framework import status, viewsets, generics
-from rest_framework.decorators import action
-from rest_framework.permissions import (
-    AllowAny, IsAuthenticated
-)
+from rest_framework import status, viewsets, serializers
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 
+from core.pagination import CustomPagination
 from .models import User, Subscription
-from .serializers import (
-    SubscriptionSerializer, SubscribeSerializer, CurrentUserSerializer
-)
+from .serializers import SubscriptionSerializer
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
-    serializer_class = CurrentUserSerializer
-    permission_classes = [AllowAny, ]
-
-    @action(
-        detail=False,
-        methods=['get'],
-        permission_classes=(IsAuthenticated, )
-    )
-    def me(self, request):
-        serializer = self.get_serializer(self.request.user)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-class SubscribeView(APIView):
+class SubscriptionViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated, ]
-
-    def create(self, request, pk):
-        user = request.user
-        data = {
-            'author': pk,
-            'user': user.id
-        }
-        serializer = SubscribeSerializer(data=data,
-                                         context={'request': request})
-        if not serializer.is_valid():
-            return Response(
-                serializer.errors,
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-    def delete(self, request, pk):
-        user = request.user
-        author = get_object_or_404(User, pk=pk)
-        Subscription.objects.filter(user=user, author=author).delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-class SubscriptionViewSet(generics.ListAPIView):
-    permission_classes = [IsAuthenticated, ]
+    http_method_names = ['get', 'post', 'delete', ]
     serializer_class = SubscriptionSerializer
-
-    def get_serializer_context(self):
-        context = super().get_serializer_context()
-        context.update({'request': self.request})
-        return context
+    pagination_class = CustomPagination
 
     def get_queryset(self):
         user = self.request.user
         return User.objects.filter(subscribed__user=user)
+
+    def create(self, request, *args, **kwargs):
+        author = get_object_or_404(User, pk=self.kwargs.get('user_id'))
+        if self.request.user == author:
+            raise serializers.ValidationError(
+                'Нельзя подписаться на самого себя!'
+            )
+        if Subscription.objects.filter(
+            user=self.request.user, author=author
+        ).exists():
+            raise serializers.ValidationError(
+                'Такая подписка уже существует!'
+            )
+        Subscription.objects.create(user=self.request.user, author=author)
+        serializer = SubscriptionSerializer(
+            author,
+            context={'request': request},
+        )
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def delete(self, request, *args, **kwargs):
+        author = get_object_or_404(User, pk=self.kwargs.get('user_id'))
+        if not Subscription.objects.filter(
+            user=self.request.user, author=author
+        ).exists():
+            raise serializers.ValidationError(
+                'Такой подписки не существует!'
+            )
+        subscription = get_object_or_404(
+            Subscription, user=self.request.user, author=author)
+        subscription.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
