@@ -50,7 +50,7 @@ class CurrentUserSerializer(UserSerializer):
         extra_kwargs = {"password": {'write_only': True}}
 
     def get_is_subscribed(self, obj):
-        user = self.context.get('request').user
+        user = self.context['request'].user
         if user.id is None:
             return False
         return obj.subscribed.filter(user=user).exists()
