@@ -27,10 +27,14 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         try:
-            with open(os.path.join(DATA_ROOT, 'ingredients.csv')) as csv_file:
+            with open(
+                os.path.join(DATA_ROOT, options['filename']),
+                newline='',
+                encoding='utf8'
+            ) as csv_file:
                 data = csv.reader(csv_file)
                 for row in data:
-                    [name, measurement_unit] = row
+                    name, measurement_unit = row
                     Ingredient.objects.get_or_create(
                         name=name,
                         measurement_unit=measurement_unit

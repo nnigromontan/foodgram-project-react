@@ -40,6 +40,7 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(
         max_length=255,
+        db_index=True,
         verbose_name='Название',
         help_text='Введите название ингредиента'
     )
@@ -50,7 +51,6 @@ class Ingredient(models.Model):
     )
 
     class Meta:
-        ordering = ['name']
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
 
