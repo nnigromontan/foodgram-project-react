@@ -1,13 +1,13 @@
 """Адреса приложения users проекта foodgram."""
 
 from django.urls import include, path
-from rest_framework.routers import SimpleRouter
+from rest_framework.routers import DefaultRouter
 
 from users.views import SubscriptionViewSet
 
 app_name = 'users'
 
-router = SimpleRouter()
+router = DefaultRouter()
 router.register(
     r'users/(?P<user_id>\d+)/subscribe',
     SubscriptionViewSet,

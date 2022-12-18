@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from rest_framework import status, viewsets, serializers
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.decorators import action
 
 from core.pagination import CustomPagination
 from .models import User, Subscription
@@ -16,6 +17,7 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
     serializer_class = SubscriptionSerializer
     pagination_class = CustomPagination
 
+    @action(detail=False, url_name='subscriptions')
     def get_queryset(self):
         user = self.request.user
         return User.objects.filter(subscribed__user=user)
@@ -39,6 +41,7 @@ class SubscriptionViewSet(viewsets.ModelViewSet):
         )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
+    @action(detail=True, url_name='subscribe')
     def delete(self, request, *args, **kwargs):
         author = get_object_or_404(User, pk=self.kwargs.get('user_id'))
         if not Subscription.objects.filter(
