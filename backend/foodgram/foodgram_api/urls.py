@@ -8,8 +8,8 @@ from foodgram_api.views import IngredientViewSet, RecipeViewSet, TagViewSet
 app_name = 'foodgram_api'
 
 router = DefaultRouter()
-router.register('ingredients', IngredientViewSet, basename='ingredients')
-router.register('recipes', RecipeViewSet, basename='recipes')
+router.register('ingredients', IngredientViewSet)
+router.register('recipes', RecipeViewSet)
 router.register('tags', TagViewSet, basename='tags')
 
 urlpatterns = [
