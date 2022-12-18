@@ -1,10 +1,35 @@
 """Сериализаторы приложения users."""
 
-from djoser.serializers import UserSerializer
+from djoser.serializers import UserSerializer, UserCreateSerializer
 from rest_framework import serializers
 
 from foodgram_api.models import Recipe
 from .models import User
+
+class CustomUserCreateSerializer(UserCreateSerializer):
+
+    class Meta:
+        model = User
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'password'
+        )
+        extra_kwargs = {'password': {'write_only': True}}
+
+    def create(self, validated_data):
+        user = User.objects.create(
+            email=validated_data['email'],
+            username=validated_data['username'],
+            first_name=validated_data['first_name'],
+            last_name=validated_data['last_name']
+        )
+        user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 
 class CurrentUserSerializer(UserSerializer):
@@ -54,12 +79,12 @@ class SubscriptionSerializer(serializers.ModelSerializer):
         return obj.subscribed.filter(user=user).exists()
 
     def get_recipes(self, obj):
-        recipes = obj.recipes.all()[:3]
         request = self.context.get('request')
-        return ShortRecipeSerializer(
-            recipes, many=True,
-            context={'request': request}
-        ).data
+        recipes = obj.recipes.all()
+        recipes_limit = request.query_params.get('recipes_limit')
+        if recipes_limit:
+            recipes = recipes[:int(recipes_limit)]
+        return ShortRecipeSerializer(recipes, many=True).data
 
     def get_recipes_count(self, obj):
         return obj.recipes.count()
