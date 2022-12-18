@@ -4,20 +4,29 @@ from django_filters.rest_framework import FilterSet
 from django_filters.rest_framework.filters import (
     ModelChoiceFilter,
     AllValuesMultipleFilter,
-    BooleanFilter)
-from rest_framework.filters import SearchFilter
+    BooleanFilter,
+    CharFilter)
 
-from .models import Recipe
+from .models import Recipe, Ingredient
 from users.models import User
 
 
-class IngredientSearchFilter(SearchFilter):
-    search_param = 'name'
+class IngredientFilter(FilterSet):
+    name = CharFilter(
+        field_name='name',
+        lookup_expr='istartswith',
+    )
+
+    class Meta:
+        model = Ingredient
+        fields = ('name',)
 
 
 class RecipeFilter(FilterSet):
     author = ModelChoiceFilter(queryset=User.objects.all())
-    tags = AllValuesMultipleFilter(field_name='tags__slug')
+    tags = AllValuesMultipleFilter(field_name='tags__slug',
+                                   to_field_name='slug',
+                                   label='tags')
     is_favorited = BooleanFilter(method='filter_is_favorited')
     is_in_shopping_cart = BooleanFilter(method='filter_is_in_shopping_cart')
 
