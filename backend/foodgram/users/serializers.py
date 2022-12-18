@@ -6,6 +6,7 @@ from rest_framework import serializers
 from foodgram_api.models import Recipe
 from .models import User
 
+
 class CustomUserCreateSerializer(UserCreateSerializer):
 
     class Meta:
