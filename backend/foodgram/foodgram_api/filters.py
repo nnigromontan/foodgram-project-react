@@ -5,14 +5,9 @@ from django_filters.rest_framework.filters import (
     ModelChoiceFilter,
     AllValuesMultipleFilter,
     BooleanFilter)
-from rest_framework.filters import SearchFilter
 
 from .models import Recipe
 from users.models import User
-
-
-class IngredientSearchFilter(SearchFilter):
-    search_param = 'name'
 
 
 class RecipeFilter(FilterSet):
