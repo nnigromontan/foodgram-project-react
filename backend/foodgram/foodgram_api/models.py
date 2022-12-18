@@ -40,7 +40,6 @@ class Tag(models.Model):
 class Ingredient(models.Model):
     name = models.CharField(
         max_length=255,
-        db_index=True,
         verbose_name='Название',
         help_text='Введите название ингредиента'
     )
